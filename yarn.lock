@@ -6101,6 +6101,16 @@ react-native-codegen@^0.71.5:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-flipper-zustand@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-flipper-zustand/-/react-native-flipper-zustand-2.0.1.tgz#c9a5081dfb831c89e507662d90cd7fcb0a66cc08"
+  integrity sha512-ic7L/rEE3m+was3F9MA18V+7DV+vAF0CEXAKPL/vdORiqmQd8bTmidfFaIcDYz/z40R6vuwmwDTPaxUKT1khdA==
+
+react-native-flipper@0.194.0:
+  version "0.194.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.194.0.tgz#ad7986b6c2f03f82b1892d562394bfe7dd2b9e07"
+  integrity sha512-/iVlfLq5ym3z3YeXGb86NVcIGHZXRSm3js/eCgDaBqYnTHvb8g1NZe5x+dHpMc58kNs+Cj1ND4Oics8oO45Xtw==
+
 react-native-gesture-handler@2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.11.0.tgz#cc325430369030ec420d3d455eb2ea2e3fe2c27a"
@@ -6116,6 +6126,11 @@ react-native-gradle-plugin@^0.71.17:
   version "0.71.17"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz#cf780a27270f0a32dca8184eff91555d7627dd00"
   integrity sha512-OXXYgpISEqERwjSlaCiaQY6cTY5CH6j73gdkWpK0hedxtiWMWgH+i5TOi4hIGYitm9kQBeyDu+wim9fA8ROFJA==
+
+react-native-mmkv@2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.8.0.tgz#328318256eb50f0b87826edceaff4b1cd70ba957"
+  integrity sha512-sfI2uzr5UCz7jS6QxIWnC7AbIuoIw9T7hDtsw0ohSlIdCABPoORPu8xpOSZN2bMkK7Z7sMQwLeP73uBXu0A3jw==
 
 react-native-rename@3.2.12:
   version "3.2.12"

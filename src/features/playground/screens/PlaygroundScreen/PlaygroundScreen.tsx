@@ -12,6 +12,10 @@ export const PlaygroundScreen: React.FC<Props> = () => {
   const addPoint = useBoundStore(state => state.addPoint);
   const points = useBoundStore(state => state.points);
 
+  React.useEffect(() => {
+    console.log('points', points);
+  }, [points]);
+
   return (
     <View style={{ justifyContent: 'center', alignContent: 'center', flex: 1 }}>
       <Text>{'PlaygroundScreen'}</Text>
