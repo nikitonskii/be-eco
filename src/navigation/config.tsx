@@ -1,10 +1,11 @@
 import { TransitionPresets, StackNavigationOptions, StackScreenProps } from '@react-navigation/stack';
-
-import { Dimensions } from 'react-native';
+import { Dimensions, TouchableOpacity } from 'react-native';
 
 import { RouteNames, RootStackParams } from '../types';
+import { colors } from '@/shared/config/pallete';
+import Settings from '@/shared/libSvg/Settings';
 
-const { width: screenWidth } = Dimensions.get('screen');
+const { width: SCREEN_WIDTH } = Dimensions.get('screen');
 
 const headerHidden = {
   headerShown: false,
@@ -22,11 +23,22 @@ const backHidden = {
   headerLeft: () => null,
 };
 
-const headerStyle = {
-  headerStyle: {
-    backgroundColor: 'transparent',
+const headerStylesDict: { [key: string]: any } = {
+  [RouteNames.Playground]: {
+    backgroundColor: colors.playgroundBackground,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: 0,
+  },
+  [RouteNames.Profile]: {
+    backgroundColor: colors.profileBackground,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: 0,
   },
 };
+
+const setHeaderStyle = (routeName: RouteNames) => headerStylesDict[routeName];
 
 const rootStack: any = {
   initialRouteName: RouteNames.Playground,
@@ -35,13 +47,16 @@ const rootStack: any = {
     return {
       ...TransitionPresets.SlideFromRightIOS,
       headerTitle: props.route.name,
-      headerLeft: () => null,
-      headerStyle: {
-        backgroundColor: 'transparent',
-        elevation: 0,
-      },
+      headerStyle: setHeaderStyle(props.route.name),
+      // TODO: refactor
+      headerRight: () =>
+        props.route.name === RouteNames.Playground ? (
+          <TouchableOpacity style={{ marginRight: 16 }} onPress={() => props.navigation.navigate(RouteNames.Profile)}>
+            <Settings />
+          </TouchableOpacity>
+        ) : null,
       headerTitleStyle: {
-        width: screenWidth, //TODO - check is right header buttons still pressable
+        width: SCREEN_WIDTH, //TODO - check is right header buttons still pressable
         textAlign: 'left',
         fontSize: 26,
         fontWeight: '500',
@@ -63,4 +78,4 @@ const modalStack: any = {
   },
 };
 
-export { headerHidden, headerStyle, noanimation, rootStack, notitle, backHidden, modalStack };
+export { headerHidden, noanimation, rootStack, notitle, backHidden, modalStack };

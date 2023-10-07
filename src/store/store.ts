@@ -39,3 +39,5 @@ export const useBoundStore = create<ProfileSlice & PlaygroundSlice>()(
     },
   ),
 );
+
+//storage.clearAll();
