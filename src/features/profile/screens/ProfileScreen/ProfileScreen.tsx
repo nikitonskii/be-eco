@@ -8,6 +8,7 @@ import { colors } from '@/shared/config/pallete';
 import { getTimeDifference } from '@/utils';
 import Button from '@/shared/components/Button';
 import styles from './ProfileScreen.styles';
+import FirebaseService from '@/shared/api/firebase';
 
 export interface Props {}
 
@@ -16,6 +17,8 @@ export const ProfileScreen: React.FC<Props> = () => {
   const [total, timeRange] = useBoundStore(state => [state.total, state.timeRange], shallow);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = React.useState<boolean>(false);
   const [userName, setUserName] = React.useState<string>('');
+
+  console.log('dsdsd', FirebaseService);
 
   return (
     <View
