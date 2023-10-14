@@ -1,4 +1,4 @@
-package com.be_eco;
+package com.cherrymob.geoguess;
 import android.os.Bundle;
 
 
@@ -15,7 +15,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "be_eco";
+    return "Geoguess";
   }
 
   /**
