@@ -7,6 +7,8 @@ import { shallow } from 'zustand/shallow';
 import { v4 as uuidv4 } from 'uuid';
 import * as Progress from 'react-native-progress';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
+import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-3815437155246002~5821117017';
 
 import { useBoundStore } from '@/store/store';
 import { RootStackParams, RouteNames } from '@/types';
@@ -15,7 +17,7 @@ import * as countriesDB from '@/shared/countries.json';
 import { RiddleItem, Timer } from '@/features/playground/components';
 import styles from './PlaygroundScreen.styles';
 import Button from '@/shared/components/Button';
-import { shuffle, generateRandomNumber } from '@/utils';
+import { shuffle, generateRandomNumber, calculateTotal } from '@/utils';
 import { colors } from '@/shared/config/pallete';
 import {
   MAX_QUIZ_TIMER_VALUE,
@@ -24,6 +26,11 @@ import {
   OPTION_STACK_MAX,
   ANIMATION_OFFSET_X,
 } from '@/features/playground/config';
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing', 'travel', 'ukraine'],
+});
 
 export const PlaygroundScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -37,6 +44,7 @@ export const PlaygroundScreen: React.FC = () => {
     setTimeRange,
     resetPoints,
     setTotal,
+    timeRange,
   ] = useBoundStore(
     state => [
       state.addPoint,
@@ -48,18 +56,31 @@ export const PlaygroundScreen: React.FC = () => {
       state.setTimeRange,
       state.resetPoints,
       state.setTotal,
+      state.timeRange,
     ],
     shallow,
   );
   const [isGameStarted, setIsGameStarted] = React.useState<boolean>(false);
   const timerRef = React.useRef<any>();
 
-  const imageSrc = require('src/features/playground/assets/img/background1.png');
+  const imageSrc = require('src/shared/assets/background1.png');
   const boatSrc = require('src/features/playground/assets/lottie/boat.json');
   const barProgress = (usedOptions.length / 100) * PROGRESS_PROPORTION;
   const [optionId, setOptionId] = React.useState<number>(generateRandomNumber(OPTIONS_AMOUNT_MAX, usedOptions));
   const optionsTranslateX = useSharedValue(ANIMATION_OFFSET_X);
   const flagTranslateX = useSharedValue(-ANIMATION_OFFSET_X);
+
+  React.useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {});
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return unsubscribe;
+  }, []);
+
+  // No advert ready to show yet
 
   const createNewQuiz = () => {
     if (usedOptions.length > OPTION_STACK_MAX) {
@@ -112,11 +133,9 @@ export const PlaygroundScreen: React.FC = () => {
 
   React.useEffect(() => {
     if (usedOptions.length >= 20) {
-      //Alert.alert('END OF THE GAME');
-
       setIsGameStarted(false);
       setTimeRange({ end: new Date() });
-      setTotal(points);
+      setTotal(calculateTotal(timeRange.start, timeRange.end, points, MAX_QUIZ_TIMER_VALUE * 20));
       resetPoints();
       clearUsedOptions();
       navigation.navigate(RouteNames.Profile);
@@ -176,12 +195,21 @@ export const PlaygroundScreen: React.FC = () => {
           />
         </View>
 
+        {!isGameStarted ? (
+          <Button
+            onPress={() => {
+              interstitial.show();
+            }}
+            title="Get extra points"
+          />
+        ) : null}
+
         <Animated.View style={[styles.riddleWrapper, { transform: [{ translateX: flagTranslateX }] }]}>
           <RiddleItem image={countriesDB[optionId]?.flag} />
 
           <TouchableOpacity
             style={{ justifyContent: 'flex-end' }}
-            onPress={() => navigation.navigate(RouteNames.InfoModal)}>
+            onPress={() => navigation.navigate(RouteNames.InfoModal, { optionId })}>
             <Text>HINT</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -189,11 +217,20 @@ export const PlaygroundScreen: React.FC = () => {
         <Lottie source={boatSrc} style={styles.lottieAnimation} autoPlay loop />
 
         <View style={styles.divider} />
+
         {!isGameStarted ? (
           <Button title="Start game" onPress={() => startGame()} containerStyle={{ borderWidth: 1 }} />
         ) : null}
 
         {generateAnswerButtons()}
+
+        <BannerAd
+          unitId={TestIds.BANNER}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
       </ImageBackground>
     </View>
   );

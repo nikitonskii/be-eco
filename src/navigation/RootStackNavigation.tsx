@@ -5,8 +5,8 @@ import { rootStack, modalStack } from './config';
 
 import { RootStackParams, RouteNames } from '../types';
 
-import { PlaygroundScreen, InfoModalScreen } from '@/features/playground/screens';
-import { ProfileScreen } from '@/features/profile/screens';
+import { PlaygroundScreen } from '@/features/playground/screens';
+import { ProfileScreen, InfoModalScreen } from '@/features/profile/screens';
 
 const RootStackNavigation: React.FC = () => {
   const Root = createStackNavigator<RootStackParams>();

@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   topPlayersContainer: {
-    flex: 1,
     backgroundColor: colors.white75,
     alignItems: 'center',
     borderRadius: 10,
     borderWidth: 1,
     margin: 8,
+    paddingVertical: 20,
   },
   modalBackground: {
     width: '100%',

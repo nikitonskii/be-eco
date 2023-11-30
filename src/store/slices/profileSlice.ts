@@ -1,11 +1,21 @@
 import { StateCreator } from 'zustand';
 
+// type TopPlayersPayload = {
+//   collection: string;
+//   filter: string;
+//   limit: number;
+// };
 export interface ProfileSlice {
-  likes: number;
-  addLike: () => void;
+  // getTopPlayers: (params: TopPlayersPayload) => void;
+  // topPlayersList: any[];
+  // userNickname: string;
+  // setUserNickname: (name: string) => void;
 }
 
 export const createProfileSlice: StateCreator<ProfileSlice, [], [], ProfileSlice> = set => ({
-  likes: 0,
-  addLike: () => set(state => ({ likes: state.likes + 1 })),
+  // total: 0,
+  // userNickname: '',
+  // setUserNickname: name => set({ userNickname: name }),
+  // topPlayersList: [],
+  // getTopPlayers: async params => {},
 });

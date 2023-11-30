@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    marginBottom: SCREEN_HEIGHT / 7,
+    marginBottom: SCREEN_HEIGHT / 10,
     flexWrap: 'wrap',
   },
   lottieAnimation: {

@@ -19,6 +19,8 @@ export interface PlaygroundSlice {
   setTotal: (amount: number) => void;
   userNickname: string;
   setUserNickname: (name: string) => void;
+  userBestScore: number;
+  setUserBestScore: (score: number) => void;
 }
 
 export const createPlaygroundSlice: StateCreator<PlaygroundSlice, [], [], PlaygroundSlice> = set => ({
@@ -28,7 +30,6 @@ export const createPlaygroundSlice: StateCreator<PlaygroundSlice, [], [], Playgr
   usedOptions: [],
   addUsedOption: (option: number) => set(state => ({ usedOptions: [...state.usedOptions, option] })),
   clearUsedOptions: () => set({ usedOptions: [] }),
-
   timeRange: {
     start: new Date(),
     end: new Date(),
@@ -40,4 +41,6 @@ export const createPlaygroundSlice: StateCreator<PlaygroundSlice, [], [], Playgr
   total: 0,
   userNickname: '',
   setUserNickname: name => set({ userNickname: name }),
+  userBestScore: 0,
+  setUserBestScore: score => set({ userBestScore: score }),
 });

@@ -1,5 +1,6 @@
 package com.cherrymob.geoguess;
 import android.os.Bundle;
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 
 import com.facebook.react.ReactActivity;
@@ -37,6 +38,7 @@ public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    RNBootSplash.init(this, R.style.BootTheme); // ⬅️ initialize the splash screen
     super.onCreate(null);
   }
 }
