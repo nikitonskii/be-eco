@@ -31,7 +31,13 @@ export const useBoundStore = create<ProfileSlice & PlaygroundSlice>()(
       {
         name: 'global', // name of the item in the storage (must be unique)
         storage: createJSONStorage(() => zustandStorage), // (optional) by default, 'localStorage' is used
-        //partialize: state => ({ profile: state.likes, playground: state.points }),
+        partialize: state => {
+          return {
+            ...state,
+            usedOptions: [],
+            points: 0,
+          };
+        },
       },
     ),
     {

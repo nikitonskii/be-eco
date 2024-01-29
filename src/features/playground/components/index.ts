@@ -1,4 +1,5 @@
 import RiddleItem from './RiddleItem';
 import Timer from './Timer';
+import HintModal from './HintModal';
 
-export { RiddleItem, Timer };
+export { RiddleItem, Timer, HintModal };

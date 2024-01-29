@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   riddleWrapper: {
-    padding: 20,
+    padding: 16,
     backgroundColor: colors.white75,
     borderRadius: 8,
     marginTop: 10,
@@ -51,6 +51,25 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     paddingRight: 20,
+  },
+  scorePoints: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.black,
+    paddingLeft: 20,
+  },
+  scoreLabel: {
+    marginLeft: 50,
+    color: colors.black,
+  },
+  hintButton: {
+    backgroundColor: colors.white75,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
 });
 

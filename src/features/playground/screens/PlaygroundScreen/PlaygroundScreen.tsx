@@ -7,30 +7,28 @@ import { shallow } from 'zustand/shallow';
 import { v4 as uuidv4 } from 'uuid';
 import * as Progress from 'react-native-progress';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
-import { InterstitialAd, AdEventType, TestIds, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
-const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-3815437155246002~5821117017';
+import { TestIds, BannerAd, BannerAdSize, useInterstitialAd } from 'react-native-google-mobile-ads';
 
 import { useBoundStore } from '@/store/store';
-import { RootStackParams, RouteNames } from '@/types';
 import * as countriesDB from '@/shared/countries.json';
-
-import { RiddleItem, Timer } from '@/features/playground/components';
-import styles from './PlaygroundScreen.styles';
-import Button from '@/shared/components/Button';
-import { shuffle, generateRandomNumber, calculateTotal } from '@/utils';
 import { colors } from '@/shared/config/pallete';
+import { Button } from '@/shared/components';
+import { RootStackParams, RouteNames } from '@/types';
+import { shuffle, generateRandomNumber, calculateTotal, getHintInfo } from '@/utils';
+import { HintIcon } from '@/shared/libSvg';
+
+import styles from './PlaygroundScreen.styles';
+import { RiddleItem, Timer, HintModal } from '@/features/playground/components';
 import {
   MAX_QUIZ_TIMER_VALUE,
   OPTIONS_AMOUNT_MAX,
   PROGRESS_PROPORTION,
   OPTION_STACK_MAX,
   ANIMATION_OFFSET_X,
+  adMobId,
 } from '@/features/playground/config';
 
-const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ['fashion', 'clothing', 'travel', 'ukraine'],
-});
+const adIterstitialId = __DEV__ ? TestIds.INTERSTITIAL : adMobId;
 
 export const PlaygroundScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
@@ -69,18 +67,21 @@ export const PlaygroundScreen: React.FC = () => {
   const [optionId, setOptionId] = React.useState<number>(generateRandomNumber(OPTIONS_AMOUNT_MAX, usedOptions));
   const optionsTranslateX = useSharedValue(ANIMATION_OFFSET_X);
   const flagTranslateX = useSharedValue(-ANIMATION_OFFSET_X);
+  const [isHintModalOpen, setHintModal] = React.useState<boolean>(false);
+  const isHintUsed = React.useRef<boolean>(false);
+  const { isLoaded, isClosed, load, show } = useInterstitialAd(adIterstitialId);
 
   React.useEffect(() => {
-    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {});
-
     // Start loading the interstitial straight away
-    interstitial.load();
+    load();
+  }, [load]);
 
-    // Unsubscribe from events on unmount
-    return unsubscribe;
-  }, []);
-
-  // No advert ready to show yet
+  React.useEffect(() => {
+    if (isClosed) {
+      // Action after the ad is closed
+      load();
+    }
+  }, [isClosed]);
 
   const createNewQuiz = () => {
     if (usedOptions.length > OPTION_STACK_MAX) {
@@ -90,10 +91,11 @@ export const PlaygroundScreen: React.FC = () => {
     }
   };
 
-  const regenerateQuiz = () => {
+  const regenerateQuiz = React.useCallback(() => {
     createNewQuiz();
     setOptionId(generateRandomNumber(OPTIONS_AMOUNT_MAX, usedOptions));
-  };
+    isHintUsed.current = false;
+  }, [points]);
 
   const onPressAnswerOption = (option: string) => () => {
     option === countriesDB[optionId]?.name?.common
@@ -105,6 +107,16 @@ export const PlaygroundScreen: React.FC = () => {
   const handleScoreIfTimeOut = () => {
     subtructPoint(MAX_QUIZ_TIMER_VALUE);
     regenerateQuiz();
+  };
+
+  const getTimerState = () => {
+    const timerState = timerRef.current.getTimerStateValue();
+
+    if (timerState) {
+      return Number(timerState);
+    }
+
+    return 1;
   };
 
   const generateAnswerButtons = React.useCallback(() => {
@@ -123,7 +135,9 @@ export const PlaygroundScreen: React.FC = () => {
     shuffle(answersArray);
 
     return (
-      <Animated.View style={[styles.buttonsContainer, { transform: [{ translateX: optionsTranslateX }] }]}>
+      <Animated.View
+        style={[styles.buttonsContainer, { transform: [{ translateX: optionsTranslateX }] }]}
+        key={uuidv4()}>
         {answersArray.length
           ? answersArray.map(option => <Button key={uuidv4()} title={option} onPress={onPressAnswerOption(option)} />)
           : null}
@@ -158,15 +172,22 @@ export const PlaygroundScreen: React.FC = () => {
     }
   }, [isGameStarted]);
 
-  const getTimerState = () => {
-    const timerState = timerRef.current.getTimerStateValue();
+  React.useEffect(() => {
+    //TODO: use constants to avoid magic numbers
 
-    if (timerState) {
-      return Number(timerState);
+    const secondsToClose = (8 - getTimerState()) * 1000;
+    let timer: NodeJS.Timeout;
+
+    if (isHintModalOpen) {
+      timer = setTimeout(() => {
+        setHintModal(false);
+      }, secondsToClose);
     }
 
-    return 1;
-  };
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isHintModalOpen]);
 
   return (
     <View style={styles.container}>
@@ -182,8 +203,8 @@ export const PlaygroundScreen: React.FC = () => {
         </View>
 
         <View style={styles.timerWrapper}>
-          <Text style={{ marginLeft: 50, color: '#000' }}>
-            Score:<Text style={{ fontSize: 16, fontWeight: '700', color: '#000', paddingLeft: 20 }}> {points}</Text>{' '}
+          <Text style={styles.scoreLabel}>
+            Score:<Text style={styles.scorePoints}> {points}</Text>{' '}
           </Text>
 
           <Timer
@@ -195,24 +216,24 @@ export const PlaygroundScreen: React.FC = () => {
           />
         </View>
 
-        {!isGameStarted ? (
-          <Button
-            onPress={() => {
-              interstitial.show();
-            }}
-            title="Get extra points"
-          />
+        {!isGameStarted && isLoaded ? <Button onPress={() => show()} title="Get extra points" /> : null}
+
+        {isGameStarted ? (
+          <Animated.View style={[styles.riddleWrapper, { transform: [{ translateX: flagTranslateX }] }]}>
+            <RiddleItem image={countriesDB[optionId]?.flag} />
+          </Animated.View>
         ) : null}
 
-        <Animated.View style={[styles.riddleWrapper, { transform: [{ translateX: flagTranslateX }] }]}>
-          <RiddleItem image={countriesDB[optionId]?.flag} />
-
+        {isGameStarted && !isHintUsed.current ? (
           <TouchableOpacity
-            style={{ justifyContent: 'flex-end' }}
-            onPress={() => navigation.navigate(RouteNames.InfoModal, { optionId })}>
-            <Text>HINT</Text>
+            style={styles.hintButton}
+            onPress={() => {
+              setHintModal(true);
+              isHintUsed.current = true;
+            }}>
+            <HintIcon width={40} height={40} />
           </TouchableOpacity>
-        </Animated.View>
+        ) : null}
 
         <Lottie source={boatSrc} style={styles.lottieAnimation} autoPlay loop />
 
@@ -232,6 +253,8 @@ export const PlaygroundScreen: React.FC = () => {
           }}
         />
       </ImageBackground>
+
+      <HintModal isOpened={isHintModalOpen} hintInfo={getHintInfo(optionId)} closeModal={() => setHintModal(false)} />
     </View>
   );
 };

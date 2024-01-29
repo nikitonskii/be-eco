@@ -1,3 +1,4 @@
+import { AvatarCodes } from '@/types';
 import { StateCreator } from 'zustand';
 
 type TimeRange = {
@@ -21,6 +22,8 @@ export interface PlaygroundSlice {
   setUserNickname: (name: string) => void;
   userBestScore: number;
   setUserBestScore: (score: number) => void;
+  userAvatar: AvatarCodes | undefined;
+  setUserAvatar: (avatarCode: AvatarCodes | undefined) => void;
 }
 
 export const createPlaygroundSlice: StateCreator<PlaygroundSlice, [], [], PlaygroundSlice> = set => ({
@@ -43,4 +46,6 @@ export const createPlaygroundSlice: StateCreator<PlaygroundSlice, [], [], Playgr
   setUserNickname: name => set({ userNickname: name }),
   userBestScore: 0,
   setUserBestScore: score => set({ userBestScore: score }),
+  userAvatar: undefined,
+  setUserAvatar: avatarCode => set({ userAvatar: avatarCode }),
 });

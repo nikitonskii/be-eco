@@ -2,11 +2,12 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    padding: 0,
     alignItems: 'center',
-    borderRadius: 18,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    position: 'relative',
   },
   clock: {
     fontSize: 20,
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
   },
   clockCommon: {
     position: 'absolute',
-    left: 45,
+    //left: 45,
   },
   clockAnimation: {
     width: 60,

@@ -1,11 +1,9 @@
 import { TransitionPresets, StackNavigationOptions, StackScreenProps } from '@react-navigation/stack';
-import { Dimensions, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import { RouteNames, RootStackParams } from '../types';
 import { colors } from '@/shared/config/pallete';
 import Settings from '@/shared/libSvg/Settings';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('screen');
 
 const headerHidden = {
   headerShown: false,
@@ -37,8 +35,20 @@ const headerStylesDict: { [key: string]: any } = {
     borderBottomWidth: 0,
   },
 };
+const headerTitlesDict: { [key: string]: string } = {
+  [RouteNames.Playground]: '',
+  [RouteNames.Profile]: 'Account Stat',
+};
+const headerTitleStyleDict: { [key: string]: any } = {
+  [RouteNames.Playground]: {
+    color: 'transparent',
+  },
+  [RouteNames.Profile]: { color: colors.black, fontSize: 26 },
+};
 
 const setHeaderStyle = (routeName: RouteNames) => headerStylesDict[routeName];
+const setHeaderTitle = (routeName: RouteNames): string => headerTitlesDict[routeName];
+const setHeaderTitleStyle = (routeName: RouteNames) => headerTitleStyleDict[routeName];
 
 const rootStack: any = {
   initialRouteName: RouteNames.Playground,
@@ -46,7 +56,7 @@ const rootStack: any = {
   screenOptions: (props: StackScreenProps<RootStackParams>): StackNavigationOptions => {
     return {
       ...TransitionPresets.SlideFromRightIOS,
-      headerTitle: props.route.name,
+      headerTitle: setHeaderTitle(props.route.name),
       headerStyle: setHeaderStyle(props.route.name),
       // TODO: refactor
       headerRight: () =>
@@ -55,14 +65,7 @@ const rootStack: any = {
             <Settings />
           </TouchableOpacity>
         ) : null,
-      headerTitleStyle: {
-        width: SCREEN_WIDTH, //TODO - check is right header buttons still pressable
-        textAlign: 'left',
-        fontSize: 26,
-        fontWeight: '500',
-        lineHeight: 32,
-        color: 'transparent',
-      },
+      headerTitleStyle: setHeaderTitleStyle(props.route.name),
     };
   },
 };
