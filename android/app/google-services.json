@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1038098188680",
+    "project_id": "geoguess-f9e77",
+    "storage_bucket": "geoguess-f9e77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038098188680:android:cf2cb470a605a46c45d23d",
+        "android_client_info": {
+          "package_name": "com.cherrymob.geoguess"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp5BqFg7rvm5-2jJjS77xvdjb46WfDNAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

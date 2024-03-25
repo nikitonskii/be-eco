@@ -1,10 +1,9 @@
 import { TransitionPresets, StackNavigationOptions, StackScreenProps } from '@react-navigation/stack';
-
-import { Dimensions } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import { RouteNames, RootStackParams } from '../types';
-
-const { width: screenWidth } = Dimensions.get('screen');
+import { colors } from '@/shared/config/pallete';
+import Settings from '@/shared/libSvg/Settings';
 
 const headerHidden = {
   headerShown: false,
@@ -22,11 +21,34 @@ const backHidden = {
   headerLeft: () => null,
 };
 
-const headerStyle = {
-  headerStyle: {
-    backgroundColor: 'transparent',
+const headerStylesDict: { [key: string]: any } = {
+  [RouteNames.Playground]: {
+    backgroundColor: colors.playgroundBackground,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: 0,
+  },
+  [RouteNames.Profile]: {
+    backgroundColor: colors.profileBackground,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: 0,
   },
 };
+const headerTitlesDict: { [key: string]: string } = {
+  [RouteNames.Playground]: '',
+  [RouteNames.Profile]: 'Account Stat',
+};
+const headerTitleStyleDict: { [key: string]: any } = {
+  [RouteNames.Playground]: {
+    color: 'transparent',
+  },
+  [RouteNames.Profile]: { color: colors.black, fontSize: 26 },
+};
+
+const setHeaderStyle = (routeName: RouteNames) => headerStylesDict[routeName];
+const setHeaderTitle = (routeName: RouteNames): string => headerTitlesDict[routeName];
+const setHeaderTitleStyle = (routeName: RouteNames) => headerTitleStyleDict[routeName];
 
 const rootStack: any = {
   initialRouteName: RouteNames.Playground,
@@ -34,20 +56,16 @@ const rootStack: any = {
   screenOptions: (props: StackScreenProps<RootStackParams>): StackNavigationOptions => {
     return {
       ...TransitionPresets.SlideFromRightIOS,
-      headerTitle: props.route.name,
-      headerLeft: () => null,
-      headerStyle: {
-        backgroundColor: 'transparent',
-        elevation: 0,
-      },
-      headerTitleStyle: {
-        width: screenWidth, //TODO - check is right header buttons still pressable
-        textAlign: 'left',
-        fontSize: 26,
-        fontWeight: '500',
-        lineHeight: 32,
-        color: 'transparent',
-      },
+      headerTitle: setHeaderTitle(props.route.name),
+      headerStyle: setHeaderStyle(props.route.name),
+      // TODO: refactor
+      headerRight: () =>
+        props.route.name === RouteNames.Playground ? (
+          <TouchableOpacity style={{ marginRight: 16 }} onPress={() => props.navigation.navigate(RouteNames.Profile)}>
+            <Settings />
+          </TouchableOpacity>
+        ) : null,
+      headerTitleStyle: setHeaderTitleStyle(props.route.name),
     };
   },
 };
@@ -63,4 +81,4 @@ const modalStack: any = {
   },
 };
 
-export { headerHidden, headerStyle, noanimation, rootStack, notitle, backHidden, modalStack };
+export { headerHidden, noanimation, rootStack, notitle, backHidden, modalStack };

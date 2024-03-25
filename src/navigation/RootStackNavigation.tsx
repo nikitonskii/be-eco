@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { rootStack, headerHidden, modalStack } from './config';
+import { rootStack, modalStack } from './config';
 
 import { RootStackParams, RouteNames } from '../types';
 
-import { PlaygroundScreen, InfoModalScreen } from '@/features/playground/screens';
-import { ProfileScreen } from '@/features/profile/screens';
+import { PlaygroundScreen } from '@/features/playground/screens';
+import { ProfileScreen, InfoModalScreen } from '@/features/profile/screens';
 
 const RootStackNavigation: React.FC = () => {
   const Root = createStackNavigator<RootStackParams>();
@@ -15,7 +15,7 @@ const RootStackNavigation: React.FC = () => {
     <Root.Navigator {...rootStack}>
       {true ? (
         <Root.Group {...rootStack}>
-          <Root.Screen name={RouteNames.Playground} component={PlaygroundScreen} options={headerHidden} />
+          <Root.Screen name={RouteNames.Playground} component={PlaygroundScreen} />
 
           {/* profile settings group */}
           <Root.Screen name={RouteNames.Profile} component={ProfileScreen} />

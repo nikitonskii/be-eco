@@ -1,4 +1,4 @@
-package com.be_eco;
+package com.cherrymob.geoguess;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
