@@ -1,4 +1,3 @@
 # be-eco
 
-This mobile app educates users on proper garbage sorting for environmental sustainability, offering tips on reducing waste generation and promoting a greener lifestyle.
-hey!
+Embark on your React Native app journey with be-eco, the essential boilerplate designed for swift and straightforward development. Turbocharge your process from idea to execution and get your app up and running in no time.
